@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shopping_list_collaborative/authentication/screens/auth_screen.dart';
+import 'package:shopping_list_collaborative/authentication/services/auth_service.dart';
 import 'package:shopping_list_collaborative/firestore/firestore_analytics.dart';
 import 'package:shopping_list_collaborative/firestore_produtos/presentation/produto_screen.dart';
 import 'package:uuid/uuid.dart';
@@ -42,20 +43,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Sair"),
+              onTap: () {
+                AuthService().deslogar();
+              },
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: const Text("Listin - Feira Colaborativa"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                builder: (context) {
-                  return const AuthScreen();
-                },
-              ));
-            },
-            icon: const Icon(Icons.logout),
-          )
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

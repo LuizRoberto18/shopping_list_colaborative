@@ -1,10 +1,15 @@
+import 'dart:ffi';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shopping_list_collaborative/_core/my_colors.dart';
 import 'package:shopping_list_collaborative/authentication/component/show_snackbar.dart';
 import 'package:shopping_list_collaborative/authentication/services/auth_service.dart';
 import 'package:shopping_list_collaborative/firestore/pesentation/home_screen.dart';
+
+import '../../get_control.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -41,7 +46,6 @@ class _AuthScreenState extends State<AuthScreen> {
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Image.network(
                       "https://github.com/ricarthlima/listin_assetws/raw/main/logo-icon.png",
@@ -135,13 +139,19 @@ class _AuthScreenState extends State<AuthScreen> {
                           )),
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        botaoEnviarClicado();
-                      },
-                      child: Text(
-                        (isEntrando) ? "Entrar" : "Cadastrar",
-                      ),
+                    Obx(
+                      () => GetControll.isLoading.value
+                          ? CircularProgressIndicator(
+                              color: MyColors.navy,
+                            )
+                          : ElevatedButton(
+                              onPressed: () {
+                                botaoEnviarClicado();
+                              },
+                              child: Text(
+                                (isEntrando) ? "Entrar" : "Cadastrar",
+                              ),
+                            ),
                     ),
                     TextButton(
                       onPressed: () {

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(Controller());
+    Get.put(GetControll());
     return Obx(() => GetMaterialApp(
           title: 'Listin - Lista Colaborativa',
           debugShowCheckedModeBanner: false,
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
             listTileTheme: ListTileThemeData(
               iconColor: MyColors.purpleAccent,
             ),
-            brightness: Controller.isDark.value ? Brightness.dark : Brightness.light,
+            brightness: GetControll.isDark.value ? Brightness.dark : Brightness.light,
             cardColor: MyColors.wedding,
             appBarTheme: AppBarTheme(
               toolbarHeight: 72,
@@ -69,7 +70,7 @@ class MyApp extends StatelessWidget {
             progressIndicatorTheme: ProgressIndicatorThemeData(color: MyColors.purple),
             useMaterial3: false,
           ),
-          home: const AuthScreen(),
+          home: const RoutersScreen(),
         ));
   }
 }
@@ -79,6 +80,21 @@ class RoutersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.userChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          if (snapshot.hasData) {
+            return const HomeScreen();
+          } else {
+            return const AuthScreen();
+          }
+        }
+      },
+    );
   }
 }

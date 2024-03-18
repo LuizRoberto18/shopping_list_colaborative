@@ -1,12 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shopping_list_collaborative/get_control.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Future<String?> entrarUsuario({required String email, required String senha}) async {
     try {
+      GetControll.isLoading.value = true;
+
       await _firebaseAuth.signInWithEmailAndPassword(email: email, password: senha);
+      GetControll.isLoading.value = false;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "invalid-credential":
@@ -65,6 +69,15 @@ class AuthService {
       debugPrint("teste ${e.tenantId}");
       debugPrint("teste ${e.stackTrace}");
       return "Teste ${e.code}";
+    }
+    return null;
+  }
+
+  Future<String?> deslogar() async {
+    try {
+      await _firebaseAuth.signOut();
+    } on FirebaseAuthException catch (e) {
+      return e.code;
     }
     return null;
   }

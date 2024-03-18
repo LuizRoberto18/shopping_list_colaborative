@@ -113,7 +113,7 @@ class MyColors {
   });
 
   ///***************************************************************
-  static final int _prymary = Controller.isDark.value ? 0xFF630000 : 0xFF638889;
+  static final int _prymary = GetControll.isDark.value ? 0xFF630000 : 0xFF638889;
   static MaterialColor navy = MaterialColor(_prymary, <int, Color>{
     50: Color(0xFFF1EBE8),
     100: Color(0xFFDDCEC5),
@@ -127,7 +127,7 @@ class MyColors {
     900: Color(0xFF5C2F1B),
   });
 
-  static final int _scaffol = Controller.isDark.value ? 0xFF1B1717 : 0xFFF9EFDB;
+  static final int _scaffol = GetControll.isDark.value ? 0xFF1B1717 : 0xFFF9EFDB;
   static MaterialColor wedding = MaterialColor(_scaffol, <int, Color>{
     50: Color(0xFFF5F7E6),
     100: Color(0xFFE7ECC1),
@@ -141,7 +141,7 @@ class MyColors {
     900: Color(0xFF869B13),
   });
 
-  static final int _floatAction = Controller.isDark.value ? 0xFF810000 : 0xFFEBD9B4;
+  static final int _floatAction = GetControll.isDark.value ? 0xFF810000 : 0xFFEBD9B4;
   static MaterialColor purple = MaterialColor(_floatAction, <int, Color>{
     50: Color(0xFFFAE3E5),
     100: Color(0xFFF4BABF),
@@ -155,7 +155,7 @@ class MyColors {
     900: Color(0xFFC0080F),
   });
 
-  static final int _icons = Controller.isDark.value ? 0xFFEEEBDD : 0xFF9DBC98;
+  static final int _icons = GetControll.isDark.value ? 0xFFEEEBDD : 0xFF9DBC98;
   static MaterialColor purpleAccent = MaterialColor(_icons, <int, Color>{
     50: Color(0xFFE8EDF4),
     100: Color(0xFFC5D2E4),

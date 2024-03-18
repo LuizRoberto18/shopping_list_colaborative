@@ -141,9 +141,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     const SizedBox(height: 16),
                     Obx(
                       () => GetControll.isLoading.value
-                          ? CircularProgressIndicator(
-                              color: MyColors.navy,
-                            )
+                          ? CircularProgressIndicator(color: MyColors.navy)
                           : ElevatedButton(
                               onPressed: () {
                                 botaoEnviarClicado();
@@ -192,6 +190,7 @@ class _AuthScreenState extends State<AuthScreen> {
   _entrarUsuario({required String email, required String senha}) {
     _authService.entrarUsuario(email: email, senha: senha).then((String? erro) {
       if (erro != null) {
+        GetControll.isLoading.value = false;
         showSnackBar(context: context, msg: erro);
       }
     });
@@ -206,6 +205,7 @@ class _AuthScreenState extends State<AuthScreen> {
     )
         .then((String? erro) {
       if (erro != null) {
+        GetControll.isLoading.value = false;
         showSnackBar(context: context, msg: erro);
       }
     });

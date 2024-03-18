@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shopping_list_collaborative/authentication/component/show_senha_confirmacao_senha.dart';
 import 'package:shopping_list_collaborative/authentication/screens/auth_screen.dart';
 import 'package:shopping_list_collaborative/authentication/services/auth_service.dart';
 import 'package:shopping_list_collaborative/firestore/firestore_analytics.dart';
@@ -22,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Listin> listListins = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirestoreAnalytics analytics = FirestoreAnalytics();
   late StreamSubscription _listener;
   Rx<bool> isLoading = false.obs;
@@ -47,12 +50,22 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           children: [
             ListTile(
+              leading: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              title: const Text("Remover conta"),
+              onTap: () {
+                showSenhaConfirmacaoDialog(email: _firebaseAuth.currentUser!.email!);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.logout),
               title: const Text("Sair"),
               onTap: () {
                 AuthService().deslogar();
               },
-            )
+            ),
           ],
         ),
       ),

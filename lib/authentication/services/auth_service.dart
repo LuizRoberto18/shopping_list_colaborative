@@ -8,9 +8,7 @@ class AuthService {
   Future<String?> entrarUsuario({required String email, required String senha}) async {
     try {
       GetControll.isLoading.value = true;
-
       await _firebaseAuth.signInWithEmailAndPassword(email: email, password: senha);
-      GetControll.isLoading.value = false;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "invalid-credential":
@@ -18,7 +16,7 @@ class AuthService {
         case "wrong-password":
           return "Senha incorreta";
         case "user-not-found":
-          return "Usuário não associado ao e-mail fornecido";
+          return "Nenhum usuário encontrado para esse e-mail.";
       }
       return e.code;
     }
@@ -31,13 +29,16 @@ class AuthService {
     required String nome,
   }) async {
     try {
+      GetControll.isLoading.value = true;
       UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: senha);
       await userCredential.user!.updateDisplayName(nome);
       print("FUNCIONOU");
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "email-already-in-use":
-          return "O e-mail já está incluso";
+          return "Já existe uma conta para este e-mail";
+        case "weak-password":
+          return "A senha fornecida é muito fraca";
       }
       return e.code;
     }
@@ -76,6 +77,19 @@ class AuthService {
   Future<String?> deslogar() async {
     try {
       await _firebaseAuth.signOut();
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    }
+    return null;
+  }
+
+  Future<String?> removerConta({required String senha}) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: _firebaseAuth.currentUser!.email!,
+        password: senha,
+      );
+      await _firebaseAuth.currentUser!.delete();
     } on FirebaseAuthException catch (e) {
       return e.code;
     }

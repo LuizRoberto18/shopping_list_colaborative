@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "260836939385",
+    "project_id": "shopping-list-collaborative",
+    "storage_bucket": "shopping-list-collaborative.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260836939385:android:85bda173b5075e888be6a8",
+        "android_client_info": {
+          "package_name": "com.example.shopping_list_collaborative"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0-zlmDC9w7IllFgjMw7XXNm7xFoXt0BY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -46,8 +47,24 @@ class AuthService {
       switch (e.code) {
         case "channel-error":
           return "Atenção, informe um e-mail cadastrado!";
+        case "not-email":
+          return "teste not-email";
+        case "too-many-requests":
+          return "Tenete novamente mais tarde";
+        case "invalid-email":
+          return "O e-mail informado é inválido!";
+        case "user-not-found":
+          return "O email não está cadastrado.";
       }
-      return e.code;
+      print("teste ${e.code}");
+      debugPrint("teste ${e.email}");
+      debugPrint("teste ${e.message}");
+      debugPrint("teste ${e.credential}");
+      debugPrint("teste ${e.plugin}");
+      debugPrint("teste ${e.phoneNumber}");
+      debugPrint("teste ${e.tenantId}");
+      debugPrint("teste ${e.stackTrace}");
+      return "Teste ${e.code}";
     }
     return null;
   }

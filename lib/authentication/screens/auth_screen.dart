@@ -181,14 +181,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   _entrarUsuario({required String email, required String senha}) {
     _authService.entrarUsuario(email: email, senha: senha).then((String? erro) {
-      if (erro == null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) {
-            return HomeScreen();
-          },
-        ));
-        showSnackBar(context: context, msg: "Conta logada com sucesso!", isErro: false);
-      } else {
+      if (erro != null) {
         showSnackBar(context: context, msg: erro);
       }
     });
@@ -202,9 +195,7 @@ class _AuthScreenState extends State<AuthScreen> {
       nome: nome,
     )
         .then((String? erro) {
-      if (erro == null) {
-        showSnackBar(context: context, msg: "Conta criada com sucesso!", isErro: false);
-      } else {
+      if (erro != null) {
         showSnackBar(context: context, msg: erro);
       }
     });
@@ -212,13 +203,37 @@ class _AuthScreenState extends State<AuthScreen> {
 
   esqueciMinhaSenhaClicado() {
     String email = _emailController.text;
-    _authService.redefinicaoSenha(email: email).then(
-      (String? erro) {
-        if (erro == null) {
-          showSnackBar(context: context, msg: "E-mail de redefinição enviado!", isErro: false);
-        } else {
-          showSnackBar(context: context, msg: erro);
-        }
+    showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController redefinirSenhaControl = TextEditingController(text: email);
+        return AlertDialog(
+          title: const Text("Confirme o e-mail para redefinir a senha:"),
+          content: TextFormField(
+            controller: redefinirSenhaControl,
+            decoration: const InputDecoration(
+              label: Text("Confirme o e-mail"),
+            ),
+          ),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
+          actions: [
+            TextButton(
+              onPressed: () {
+                _authService.redefinicaoSenha(email: redefinirSenhaControl.text).then(
+                  (String? erro) {
+                    if (erro == null) {
+                      showSnackBar(context: context, msg: "E-mail de redefinição enviado!", isErro: false);
+                    } else {
+                      showSnackBar(context: context, msg: erro);
+                    }
+                    Navigator.pop(context);
+                  },
+                );
+              },
+              child: const Text("Redefinir senha"),
+            ),
+          ],
+        );
       },
     );
   }

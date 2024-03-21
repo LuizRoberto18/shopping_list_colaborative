@@ -80,6 +80,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       return e.code;
     }
+    GetControll.isLoading.value = false;
     return null;
   }
 

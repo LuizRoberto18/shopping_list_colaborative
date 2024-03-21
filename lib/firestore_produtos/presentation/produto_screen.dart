@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shopping_list_collaborative/firestore_produtos/helpers/enum_order.dart';
 import 'package:uuid/uuid.dart';
 import '../../firestore/models/listin.dart';
 import '../model/produto.dart';
+import '../services/produto_service.dart';
 import 'widgets/list_tile_produto.dart';
 
 class ProdutoScreen extends StatefulWidget {
@@ -27,6 +29,7 @@ class _ProdutoScreenState extends State<ProdutoScreen> {
   bool isDecrescente = false;
 
   late StreamSubscription _listener;
+  ProdutoService produtoService = ProdutoService();
 
   @override
   void initState() {
@@ -281,7 +284,7 @@ class _ProdutoScreenState extends State<ProdutoScreen> {
                       }
 
                       // Salvar no Firestore
-                      firestore.collection("listins").doc(widget.listin.id).collection("produtos").doc(produto.id).set(produto.toMap());
+                      produtoService.adicionarProduto(listinId: widget.listin.id, produto: produto);
 
                       // Fechar o Modal
                       Navigator.pop(context);
@@ -298,28 +301,21 @@ class _ProdutoScreenState extends State<ProdutoScreen> {
   }
 
   refresh({QuerySnapshot<Map<String, dynamic>>? snapshot}) async {
-    List<Produto> temp = [];
-    snapshot ??= await firestore
-        .collection("listins")
-        .doc(widget.listin.id)
-        .collection("produtos")
-        // .where("isComprado", isEqualTo: isComprado)
-        .orderBy(ordem.name, descending: isDecrescente)
-        .get();
-    verificarAlteracoes(snapshot);
-    for (var doc in snapshot.docs) {
-      Produto produto = Produto.fromMap(doc.data());
-      temp.add(produto);
+    List<Produto> produtosResgatados =
+        await produtoService.lerProdutos(isDecrescente: isDecrescente, listinId: widget.listin.id, ordem: ordem, snapshot: snapshot);
+
+    if (snapshot != null) {
+      verificarAlteracoes(snapshot);
     }
 
-    filtarProduto(temp);
+    filtrarProduto(produtosResgatados);
   }
 
-  filtarProduto(List<Produto> listProdutos) {
+  filtrarProduto(List<Produto> listProdutos) {
     List<Produto> tempPlanejados = [];
     List<Produto> tempPegos = [];
     for (var produto in listProdutos) {
-      if (produto.isComprado == true) {
+      if (produto.isComprado) {
         tempPegos.add(produto);
       } else {
         tempPlanejados.add(produto);
@@ -337,21 +333,14 @@ class _ProdutoScreenState extends State<ProdutoScreen> {
   }
 
   setupListeners() {
-    _listener = firestore
-        .collection("listins")
-        .doc(widget.listin.id)
-        .collection("produtos")
-        .orderBy(ordem.name, descending: isDecrescente)
-        .snapshots()
-        .listen(
-      (snapshot) {
-        refresh(snapshot: snapshot);
-      },
-    );
+    _listener = produtoService.conectarStream(onChange: refresh, listinId: widget.listin.id, ordem: ordem, isDecrescente: isDecrescente);
   }
 
   void remove(Produto produto) async {
-    await firestore.collection("listins").doc(widget.listin.id).collection("produtos").doc(produto.id).delete();
+    await produtoService.removerProduto(
+      produto: produto,
+      listinId: widget.listin.id,
+    );
   }
 
   verificarAlteracoes(QuerySnapshot<Map<String, dynamic>> snapshot) {

@@ -1,16 +1,13 @@
-import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shopping_list_collaborative/_core/my_colors.dart';
 import 'package:shopping_list_collaborative/authentication/component/show_senha_confirmacao_senha.dart';
-import 'package:shopping_list_collaborative/authentication/screens/auth_screen.dart';
 import 'package:shopping_list_collaborative/authentication/services/auth_service.dart';
 import 'package:shopping_list_collaborative/firestore/firestore_analytics.dart';
 import 'package:shopping_list_collaborative/firestore_produtos/presentation/produto_screen.dart';
+import 'package:shopping_list_collaborative/storage/storage_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../get_control.dart';
@@ -55,11 +52,25 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
-                backgroundColor: MyColors.wedding,
-                child: Icon(Icons.person,color: MyColors.navy,size: 60,),
+                backgroundImage: widget.user.photoURL != null ? NetworkImage(widget.user.photoURL!) : null,
+                backgroundColor: widget.user.photoURL != null ? null : MyColors.wedding,
+                child: widget.user.photoURL != null
+                    ? null
+                    : Icon(
+                        Icons.person,
+                        color: MyColors.navy,
+                        size: 60,
+                      ),
               ),
-              accountName: Text(widget.user.displayName ??""),
+              accountName: Text(widget.user.displayName ?? ""),
               accountEmail: Text(widget.user.email!),
+            ),
+            ListTile(
+              leading: const Icon(Icons.image),
+              title: const Text("Mudar foto do perfil"),
+              onTap: () {
+                Get.to(() => const StorageScreen());
+              },
             ),
             ListTile(
               leading: const Icon(
